@@ -10,6 +10,17 @@ import SwiftData
 
 @main
 struct WhiskrApp: App {
+    init(){
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.backgroundColor = UIColor(Color(.whiskrYellow))
+        
+        UITabBar.appearance().standardAppearance = tabBarAppearance
+        
+        if #available(iOS 15.0, *) {
+            UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        }
+    }
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -25,7 +36,7 @@ struct WhiskrApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WhiskrTabView()
         }
         .modelContainer(sharedModelContainer)
     }
