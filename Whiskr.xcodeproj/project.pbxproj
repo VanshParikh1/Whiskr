@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		5895C8F32E36B711009EB626 /* HealthCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5895C8F22E36B711009EB626 /* HealthCell.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		5895C82A2E357DDB009EB626 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -31,7 +27,6 @@
 		5895C81A2E357DD7009EB626 /* Whiskr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Whiskr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5895C8292E357DDB009EB626 /* WhiskrTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhiskrTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5895C8332E357DDB009EB626 /* WhiskrUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhiskrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		5895C8F22E36B711009EB626 /* HealthCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -80,7 +75,6 @@
 		5895C8112E357DD7009EB626 = {
 			isa = PBXGroup;
 			children = (
-				5895C8F22E36B711009EB626 /* HealthCell.swift */,
 				5895C81C2E357DD7009EB626 /* Whiskr */,
 				5895C82C2E357DDB009EB626 /* WhiskrTests */,
 				5895C8362E357DDB009EB626 /* WhiskrUITests */,
@@ -242,7 +236,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5895C8F32E36B711009EB626 /* HealthCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

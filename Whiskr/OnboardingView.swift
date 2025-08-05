@@ -1,0 +1,334 @@
+//
+//  OnboardingView.swift
+//  bootcamp
+//
+//  Created by Vansh Parikh on 2025-07-27.
+//
+
+import SwiftUI
+
+
+struct OnboardingView: View {
+    /*
+     0 - Welcome screen
+     1 - Add screen
+     2 - Add age
+     3 - Add gender
+     */
+    @State var onboardingState: Int = 3
+    let transition: AnyTransition = .asymmetric(
+        insertion: .move(edge: .trailing),
+        removal: .move(edge: .leading))
+    
+    //onboarding inputs
+    
+    @State var name: String = ""
+    // 0 is Male, 1 is Female
+    @State var gender: Int = 0
+    @State var birthdate = Date()
+    @State var age : [Int] = [0, 0]
+    
+    @State private var searchText = ""
+    @State private var breeds: [String] = []
+    
+    //alerts
+    @State var alertTitle: String = ""
+    @State var showAlert: Bool = false
+    
+    //app storage
+    
+    @AppStorage("name") var currentUserName: String?
+    @AppStorage("gender") var currentGender: Int?
+    @AppStorage("age") var currentAge: Int?
+    
+    @AppStorage("signed_in") var currentUserSignedIn: Bool = false
+
+    
+    var body: some View {
+        ZStack {
+            //content: changes based on the state we have
+            
+            ZStack{
+                switch onboardingState {
+                case 0:
+                    welcomeSection
+                        .transition(transition)
+
+                case 1:
+                    addNameSection                        .transition(transition)
+
+                    
+                case 2:
+                    addAgeSection
+                        .transition(transition)
+                case 3:
+                   addBreedSection
+                        .transition(transition)
+
+                
+                default:
+                    RoundedRectangle(cornerRadius: 25)
+                        .foregroundColor(.green)
+                    
+                }
+            }
+            
+            VStack{
+                if onboardingState > 0{
+                    backButton
+                    Spacer(minLength: 650)
+                    bottomButton
+                    Spacer(minLength: 90)
+                } else {
+                    Spacer()
+                    bottomButton
+                }
+                
+                
+            }
+            .padding(30)
+        }
+        .alert(isPresented: $showAlert, content: {
+            return Alert(title: Text(alertTitle))
+        })
+    }
+    
+    
+    
+    
+}
+
+#Preview {
+    OnboardingView()
+        .background(Color.whiskrYellow)
+}
+
+//: MARK: COMPONENTS
+extension OnboardingView {
+    private var bottomButton: some View{
+        Text(onboardingState == 0 ? "GET STARTED" :
+                onboardingState == 2 ? "FINISH" :
+                "NEXT")
+        .foregroundColor(.yellow)
+        .frame(height: 55)
+        .frame(maxWidth: .infinity)
+        .background(Color.white)
+        .cornerRadius(10)
+        .onTapGesture {
+            handleNextButtonPressed()
+        }
+    }
+    private var backButton: some View {
+        HStack {
+            Button(action: {
+                withAnimation(.spring()) {
+                    onboardingState = max(onboardingState - 1, 0)
+                }
+            }) {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Color.black.opacity(0.3))
+                    .clipShape(Circle())
+            }
+            Spacer()
+        }
+        .padding(.leading, 20)
+        .padding(.top, 50)
+    }
+    
+    
+    private var welcomeSection: some View{
+        VStack(spacing: 40){
+            Spacer()
+            Image("Logo")
+            Text("Welcome to WHISKR")
+                .font(.largeTitle)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .overlay(
+                    Capsule(style: .continuous)
+                        .frame(height:3)
+                        .offset(y: 5)
+                        .foregroundColor(.white)
+                    ,alignment: .bottom
+                )
+            Text("Whiskr helps you keep track of your cat's health, reminds you when it's time to clean the little, and even gives advice when your cat's not feeling their best")
+                .fontWeight(.medium)
+                .foregroundColor(.white)
+                .padding(.horizontal)
+            Spacer()
+            Spacer()
+        }
+        .multilineTextAlignment(.center)
+    }
+    
+    
+    private var addNameSection: some View {
+        VStack(spacing: 40){
+            Spacer()
+            
+            Text("Whats your cat's name?")
+                .font(.title)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+            
+            TextField("Your name here ...", text: $name)
+                .multilineTextAlignment(.center)
+                .font(.headline)
+                .frame(height: 55)
+                .background(Color.white)
+                .cornerRadius(10)
+            
+            HStack(spacing: 0) {
+                ZStack(alignment: gender == 0 ? .leading : .trailing) {
+                    Capsule()
+                        .fill(Color.white)
+                        .frame(width: 150, height: 50)
+                        .shadow(radius: 2)
+                        .animation(.easeInOut(duration: 0.3), value: gender)
+                    
+                    HStack(spacing: 0) {
+                        ForEach(0..<2) { index in
+                            let option = index == 0 ? "Male" : "Female"
+                            Text(option)
+                                .frame(maxWidth: .infinity)
+                                .foregroundColor(gender == index ? .whiskrYellow : Color.white)
+                                .font(.headline)
+                                .onTapGesture {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        gender = index
+                                    }
+                                }
+                        }
+                    }
+                }
+            } //Gender Picker
+            .frame(height: 50)
+            .background(Color.whiskred.opacity(0.8))
+            .clipShape(Capsule())
+            .padding(.horizontal, 30)
+            
+            
+            
+            
+            Spacer()
+        }
+        .padding(30)
+    }
+    
+    
+    
+    private var addAgeSection: some View{
+        VStack(spacing: 20){
+            Spacer()
+            
+            Text("When is \(name)'s birthday?")
+                .multilineTextAlignment(.center)
+                .font(.largeTitle)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+            
+            
+            ZStack{
+                Rectangle()
+                    .frame(height: 175)
+                    .cornerRadius(30)
+                    .foregroundColor(.white)
+                
+                CustomDatePicker(date: $birthdate)
+                    .onChange(of: birthdate) {
+                        let x = getAge(from: birthdate)
+                        age[0] = x.years
+                        age[1] = x.months
+                    }
+                
+            }
+            
+            Text("\(name) is \(age[0]) years and \(age[1]) months old!")
+                .multilineTextAlignment(.center)
+                .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+            
+            Spacer()
+            Spacer()
+        }
+        .padding(30)
+    }
+    
+    private var addBreedSection: some View{
+        Text("this is where you will pick the breed!")
+    }
+    
+    
+}
+
+// MARK: FUNCTIONS
+
+extension OnboardingView{
+    
+
+    func getAge(from birthdate: Date) -> (years: Int, months: Int) {
+        let calendar = Calendar.current
+        let now = Date()
+        
+        let components = calendar.dateComponents([.year, .month], from: birthdate, to: now)
+        
+        return (components.year ?? 0, components.month ?? 0)
+    }
+
+    func handleNextButtonPressed() {
+        
+        //CHECK INPUTS
+        switch onboardingState {
+        case 1:
+            guard name.count >= 1 else {
+                showAlert(title: "Your name must be atleast 3 characters long 😜 ")
+                return
+            }
+        case 2:
+            guard age[0] > 0 || age[1] > 0 else {
+                showAlert(title: "Please enter a valid birthdate 🥸")
+                return
+            }
+        default:
+            break
+        }
+    
+        
+        //GO TO NEXT SECTION
+        if onboardingState == 3 {
+            //sign in
+            signIn()
+        } else {
+            withAnimation(.spring()){
+                onboardingState += 1
+            }
+        }
+        
+    }
+    
+    func handleBackButtonPRessed() {
+        if onboardingState == 0 {
+            
+        }
+    }
+    
+    func signIn() {
+        currentAge = age[0]
+        currentUserName = name
+        currentGender = gender
+        
+        withAnimation(.spring()) {
+            currentUserSignedIn = true
+        }
+    }
+    
+    func showAlert(title: String){
+        alertTitle = title
+        showAlert.toggle()
+    }
+}
+

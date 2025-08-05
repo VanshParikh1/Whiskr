@@ -29,7 +29,7 @@ struct WhiskrTabView: View {
                         Label("LITTER", systemImage: "toilet")
                     }
             }
-            .accentColor(.white)
+            .accentColor(.whiskred)
         }
         
         
