@@ -15,10 +15,18 @@ struct OnboardingView: View {
      2 - Add age
      3 - Add gender
      */
-    @State var onboardingState: Int = 3
-    let transition: AnyTransition = .asymmetric(
+    @State var onboardingState: Int = 2
+    
+    
+    let transition1: AnyTransition = .asymmetric(
         insertion: .move(edge: .trailing),
         removal: .move(edge: .leading))
+    
+    let transition2: AnyTransition = .asymmetric(
+        insertion: .move(edge: .leading),
+        removal: .move(edge: .trailing))
+    
+    @State var transitionState: Int = 0
     
     //onboarding inputs
     
@@ -48,22 +56,48 @@ struct OnboardingView: View {
         ZStack {
             //content: changes based on the state we have
             
+
             ZStack{
                 switch onboardingState {
                 case 0:
                     welcomeSection
-                        .transition(transition)
+                        .transition(transition1)
 
                 case 1:
-                    addNameSection                        .transition(transition)
-
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.whiskrYellow, Color.white]),
+                        startPoint: .topTrailing,
+                        endPoint: .bottomLeading
+                        )
+                    if transitionState != 1 {
+                        addNameSection                   .transition(transition1)
+                    } else {
+                        addNameSection                   .transition(transition2)
+                    }
                     
+
                 case 2:
-                    addAgeSection
-                        .transition(transition)
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.whiskrYellow, Color.white]),
+                        startPoint: .topTrailing,
+                        endPoint: .bottomLeading
+                        )
+                    if transitionState != 1 {
+                        addAgeSection                   .transition(transition1)
+                    } else {
+                        addAgeSection                   .transition(transition2)
+                    }
                 case 3:
-                   addBreedSection
-                        .transition(transition)
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.whiskrYellow, Color.white]),
+                        startPoint: .topTrailing,
+                        endPoint: .bottomLeading
+                        )
+                    if transitionState != 1 {
+                        addBreedSection                   .transition(transition1)
+                    } else {
+                        addBreedSection                   .transition(transition2)
+                    }
 
                 
                 default:
@@ -76,9 +110,10 @@ struct OnboardingView: View {
             VStack{
                 if onboardingState > 0{
                     backButton
-                    Spacer(minLength: 650)
+                        .padding()
+                    Spacer(minLength:640)
                     bottomButton
-                    Spacer(minLength: 90)
+                    Spacer(minLength: 60)
                 } else {
                     Spacer()
                     bottomButton
@@ -105,38 +140,38 @@ struct OnboardingView: View {
 
 //: MARK: COMPONENTS
 extension OnboardingView {
-    private var bottomButton: some View{
+    private var bottomButton: some View {
         Text(onboardingState == 0 ? "GET STARTED" :
-                onboardingState == 2 ? "FINISH" :
-                "NEXT")
-        .foregroundColor(.yellow)
-        .frame(height: 55)
-        .frame(maxWidth: .infinity)
-        .background(Color.white)
-        .cornerRadius(10)
-        .onTapGesture {
-            handleNextButtonPressed()
-        }
-    }
-    private var backButton: some View {
-        HStack {
-            Button(action: {
-                withAnimation(.spring()) {
-                    onboardingState = max(onboardingState - 1, 0)
-                }
-            }) {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 20, weight: .bold))
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.black.opacity(0.3))
-                    .clipShape(Circle())
+             onboardingState == 3 ? "FINISH" :
+             "NEXT")
+        .font(.title3)
+        .fontWeight(.bold)
+            .foregroundColor(.whiskred)
+            .frame(height: 55)
+            .frame(maxWidth: .infinity)
+            .background(Color.white)
+            .cornerRadius(30)
+            .shadow(color: Color.whiskred.opacity(0.3), radius: 6, x: 0, y: 4)
+            .onTapGesture {
+                handleNextButtonPressed()
             }
-            Spacer()
-        }
-        .padding(.leading, 20)
-        .padding(.top, 50)
     }
+
+    private var backButton: some View {
+        HStack() {
+            Image(systemName: "chevron.left")
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.black.opacity(0.3))
+                .clipShape(Circle())
+                .onTapGesture {
+                    handleBackButtonPRessed()
+                }
+            Spacer()
+            }
+        }
+        
     
     
     private var welcomeSection: some View{
@@ -233,24 +268,27 @@ extension OnboardingView {
             
             ZStack{
                 Rectangle()
-                    .frame(height: 175)
+                    .frame(height: 320)
                     .cornerRadius(30)
                     .foregroundColor(.white)
+                VStack{
+                    CustomDatePicker(date: $birthdate)
+                        .onChange(of: birthdate) {
+                            let x = getAge(from: birthdate)
+                            age[0] = x.years
+                            age[1] = x.months
+                        }
+                    Text("\(name) is \(age[0]) years and \(age[1]) months old!")
+                        .multilineTextAlignment(.center)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.whiskred)
+                }
                 
-                CustomDatePicker(date: $birthdate)
-                    .onChange(of: birthdate) {
-                        let x = getAge(from: birthdate)
-                        age[0] = x.years
-                        age[1] = x.months
-                    }
                 
             }
             
-            Text("\(name) is \(age[0]) years and \(age[1]) months old!")
-                .multilineTextAlignment(.center)
-                .font(.title2)
-                .fontWeight(.semibold)
-                .foregroundColor(.white)
+            
             
             Spacer()
             Spacer()
@@ -259,7 +297,10 @@ extension OnboardingView {
     }
     
     private var addBreedSection: some View{
-        Text("this is where you will pick the breed!")
+        Text("What is \(name)'s breed?")
+            .font(.title)
+            .fontWeight(.bold)
+            .foregroundColor(.white)
     }
     
     
@@ -299,10 +340,11 @@ extension OnboardingView{
     
         
         //GO TO NEXT SECTION
-        if onboardingState == 3 {
+        if onboardingState == 4 {
             //sign in
             signIn()
         } else {
+            transitionState = 0
             withAnimation(.spring()){
                 onboardingState += 1
             }
@@ -311,8 +353,11 @@ extension OnboardingView{
     }
     
     func handleBackButtonPRessed() {
-        if onboardingState == 0 {
-            
+        if onboardingState != 0 {
+            transitionState = 1
+            withAnimation(.spring()){
+                onboardingState -= 1
+            }
         }
     }
     
