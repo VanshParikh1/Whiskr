@@ -11,11 +11,12 @@ import SwiftUI
 struct OnboardingView: View {
     /*
      0 - Welcome screen
-     1 - Add screen
+     1 - Add name and gender
      2 - Add age
-     3 - Add gender
+     3 - Add breed
+     4 - Add weight
      */
-    @State var onboardingState: Int = 2
+    @State var onboardingState: Int = 4
     
     
     let transition1: AnyTransition = .asymmetric(
@@ -36,8 +37,19 @@ struct OnboardingView: View {
     @State var birthdate = Date()
     @State var age : [Int] = [0, 0]
     
+    @State private var selectedBreed: String = ""
     @State private var searchText = ""
     @State private var breeds: [String] = []
+    
+    var filteredBreeds: [String] {
+        if searchText.isEmpty {
+            return breeds
+        } else {
+            return breeds.filter { $0.lowercased().contains(searchText.lowercased()) }
+        }
+    }
+
+
     
     //alerts
     @State var alertTitle: String = ""
@@ -48,6 +60,7 @@ struct OnboardingView: View {
     @AppStorage("name") var currentUserName: String?
     @AppStorage("gender") var currentGender: Int?
     @AppStorage("age") var currentAge: Int?
+    @AppStorage("breed") var currentBreed: String?
     
     @AppStorage("signed_in") var currentUserSignedIn: Bool = false
 
@@ -70,9 +83,11 @@ struct OnboardingView: View {
                         endPoint: .bottomLeading
                         )
                     if transitionState != 1 {
-                        addNameSection                   .transition(transition1)
+                        addNameSection
+                            .transition(transition1)
                     } else {
-                        addNameSection                   .transition(transition2)
+                        addNameSection
+                            .transition(transition2)
                     }
                     
 
@@ -83,9 +98,11 @@ struct OnboardingView: View {
                         endPoint: .bottomLeading
                         )
                     if transitionState != 1 {
-                        addAgeSection                   .transition(transition1)
+                        addAgeSection
+                            .transition(transition1)
                     } else {
-                        addAgeSection                   .transition(transition2)
+                        addAgeSection
+                            .transition(transition2)
                     }
                 case 3:
                     LinearGradient(
@@ -94,10 +111,26 @@ struct OnboardingView: View {
                         endPoint: .bottomLeading
                         )
                     if transitionState != 1 {
-                        addBreedSection                   .transition(transition1)
+                        addBreedSection
+                            .transition(transition1)
                     } else {
-                        addBreedSection                   .transition(transition2)
+                        addBreedSection
+                            .transition(transition2)
                     }
+                case 4:
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.whiskrYellow, Color.white]),
+                        startPoint: .topTrailing,
+                        endPoint: .bottomLeading
+                        )
+                    if transitionState != 1 {
+                        addWeightSection
+                            .transition(transition1)
+                    } else {
+                        addWeightSection
+                            .transition(transition2)
+                    }
+                    
 
                 
                 default:
@@ -140,9 +173,10 @@ struct OnboardingView: View {
 
 //: MARK: COMPONENTS
 extension OnboardingView {
+    //Buttons
     private var bottomButton: some View {
         Text(onboardingState == 0 ? "GET STARTED" :
-             onboardingState == 3 ? "FINISH" :
+             onboardingState == 4 ? "Start using Whiskr!" :
              "NEXT")
         .font(.title3)
         .fontWeight(.bold)
@@ -156,7 +190,6 @@ extension OnboardingView {
                 handleNextButtonPressed()
             }
     }
-
     private var backButton: some View {
         HStack() {
             Image(systemName: "chevron.left")
@@ -173,7 +206,7 @@ extension OnboardingView {
         }
         
     
-    
+    //Screens
     private var welcomeSection: some View{
         VStack(spacing: 40){
             Spacer()
@@ -198,8 +231,6 @@ extension OnboardingView {
         }
         .multilineTextAlignment(.center)
     }
-    
-    
     private var addNameSection: some View {
         VStack(spacing: 40){
             Spacer()
@@ -252,9 +283,6 @@ extension OnboardingView {
         }
         .padding(30)
     }
-    
-    
-    
     private var addAgeSection: some View{
         VStack(spacing: 20){
             Spacer()
@@ -295,13 +323,71 @@ extension OnboardingView {
         }
         .padding(30)
     }
-    
-    private var addBreedSection: some View{
-        Text("What is \(name)'s breed?")
-            .font(.title)
-            .fontWeight(.bold)
-            .foregroundColor(.white)
+    private var addBreedSection: some View {
+        VStack {
+            Spacer()
+            Text("What is \(name)'s breed?")
+                .font(.title)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+            TextField("Search for breed...", text: $searchText)
+                .padding()
+                .background(Color(.white))
+                .cornerRadius(10)
+                .padding()
+
+            ZStack {
+                Rectangle()
+                    .foregroundColor(.white)
+                    .cornerRadius(20)
+                    .frame(height: 300)
+                
+                VStack {
+                    List {
+                        ForEach(filteredBreeds, id: \.self) { breed in
+                            HStack {
+                                Text(breed)
+                                Spacer()
+                                if breed == selectedBreed {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.accentColor)
+                                }
+                            }
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                selectedBreed = breed
+                            }
+                        }
+                    }
+                    .foregroundColor(.whiskred)
+                    .listStyle(.plain)
+                    .frame(height: 250)
+                }
+                .padding()
+            }
+
+          Spacer(minLength: 250)
+
+        }
+        .padding(30)
+        .onAppear {
+            if breeds.isEmpty {
+                breeds = loadBreeds()
+            }
+        
+        }
     }
+    private var addWeightSection: some View {
+        VStack{
+            Text("How much does \(name) weight?")
+                .font(.title)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+        }
+    }
+    
+   
+
     
     
 }
@@ -333,6 +419,12 @@ extension OnboardingView{
             guard age[0] > 0 || age[1] > 0 else {
                 showAlert(title: "Please enter a valid birthdate 🥸")
                 return
+            }
+        case 3:
+            guard selectedBreed.count >= 1 else {
+                showAlert(title: "Please select a breed 🐈")
+                return
+
             }
         default:
             break
@@ -375,5 +467,16 @@ extension OnboardingView{
         alertTitle = title
         showAlert.toggle()
     }
+    
+    func loadBreeds() -> [String] {
+        guard let url = Bundle.main.url(forResource: "cat-breeds", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let decoded = try? JSONDecoder().decode([String].self, from: data) else {
+            print("⚠️ Failed to load breeds.json")
+            return []
+        }
+        return decoded
+    }
+
 }
 
