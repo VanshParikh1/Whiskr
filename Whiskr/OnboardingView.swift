@@ -15,8 +15,9 @@ struct OnboardingView: View {
      2 - Add age
      3 - Add breed
      4 - Add weight
+     5 - Last vet visit
      */
-    @State var onboardingState: Int = 4
+    @State var onboardingState: Int = 0
     
     
     let transition1: AnyTransition = .asymmetric(
@@ -36,7 +37,10 @@ struct OnboardingView: View {
     @State var gender: Int = 0
     @State var birthdate = Date()
     @State var age : [Int] = [0, 0]
-    
+    @State var weight: Double = 0.0
+    @State var lastVetVisit = Date()
+    @State var vetString: String = ""
+
     @State private var selectedBreed: String = ""
     @State private var searchText = ""
     @State private var breeds: [String] = []
@@ -58,9 +62,13 @@ struct OnboardingView: View {
     //app storage
     
     @AppStorage("name") var currentUserName: String?
-    @AppStorage("gender") var currentGender: Int?
+    @AppStorage("gender") var currentGender: String?
     @AppStorage("age") var currentAge: Int?
     @AppStorage("breed") var currentBreed: String?
+    @AppStorage("weight") var currentWeight: Double?
+    @AppStorage("vetVisit")  var vetVisit: String = ""
+
+
     
     @AppStorage("signed_in") var currentUserSignedIn: Bool = false
 
@@ -130,6 +138,33 @@ struct OnboardingView: View {
                         addWeightSection
                             .transition(transition2)
                     }
+                case 5:
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.whiskrYellow, Color.white]),
+                        startPoint: .topTrailing,
+                        endPoint: .bottomLeading
+                        )
+                    if transitionState != 1 {
+                        lastVetVisitSection
+                            .transition(transition1)
+                    } else {
+                        lastVetVisitSection
+                            .transition(transition2)
+                    }
+                    
+                case 6:
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.whiskrYellow, Color.white]),
+                        startPoint: .topTrailing,
+                        endPoint: .bottomLeading
+                        )
+                    if transitionState != 1 {
+                        finalOnboardingView
+                            .transition(transition1)
+                    } else {
+                        finalOnboardingView
+                            .transition(transition2)
+                    }
                     
 
                 
@@ -176,19 +211,19 @@ extension OnboardingView {
     //Buttons
     private var bottomButton: some View {
         Text(onboardingState == 0 ? "GET STARTED" :
-             onboardingState == 4 ? "Start using Whiskr!" :
-             "NEXT")
+                onboardingState == 6 ? "Start using Whiskr!" :
+                "NEXT")
         .font(.title3)
         .fontWeight(.bold)
-            .foregroundColor(.whiskred)
-            .frame(height: 55)
-            .frame(maxWidth: .infinity)
-            .background(Color.white)
-            .cornerRadius(30)
-            .shadow(color: Color.whiskred.opacity(0.3), radius: 6, x: 0, y: 4)
-            .onTapGesture {
-                handleNextButtonPressed()
-            }
+        .foregroundColor(.whiskred)
+        .frame(height: 55)
+        .frame(maxWidth: .infinity)
+        .background(Color.white)
+        .cornerRadius(30)
+        .shadow(color: Color.whiskred.opacity(0.3), radius: 6, x: 0, y: 4)
+        .onTapGesture {
+            handleNextButtonPressed()
+        }
     }
     private var backButton: some View {
         HStack() {
@@ -202,9 +237,28 @@ extension OnboardingView {
                     handleBackButtonPRessed()
                 }
             Spacer()
-            }
         }
+    }
+    
+    struct infoCell: View{
+        //Age, Breed, Weight, Photo,Notes,Last vet visit
+        var info: String
         
+        var body: some View {
+            ZStack{
+                Rectangle()
+                    .frame(height: 60)
+                    .cornerRadius(20)
+                    .foregroundColor(Color(.whiskredDark))
+                Text(info)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+            }
+            
+        }
+    }
+    
     
     //Screens
     private var welcomeSection: some View{
@@ -235,12 +289,12 @@ extension OnboardingView {
         VStack(spacing: 40){
             Spacer()
             
-            Text("Whats your cat's name?")
+            Text("What is your cat's name?")
                 .font(.title)
                 .fontWeight(.semibold)
                 .foregroundColor(.white)
             
-            TextField("Your name here ...", text: $name)
+            TextField("Your cats name here...", text: $name)
                 .multilineTextAlignment(.center)
                 .font(.headline)
                 .frame(height: 55)
@@ -335,7 +389,7 @@ extension OnboardingView {
                 .background(Color(.white))
                 .cornerRadius(10)
                 .padding()
-
+            
             ZStack {
                 Rectangle()
                     .foregroundColor(.white)
@@ -365,118 +419,255 @@ extension OnboardingView {
                 }
                 .padding()
             }
-
-          Spacer(minLength: 250)
-
+            
+            Spacer(minLength: 250)
+            
         }
         .padding(30)
         .onAppear {
             if breeds.isEmpty {
                 breeds = loadBreeds()
             }
-        
+            
         }
     }
     private var addWeightSection: some View {
-        VStack{
-            Text("How much does \(name) weight?")
+        VStack(spacing: 20){
+            Spacer()
+            
+            Text("What's \(name)'s weight?")
+                .font(.largeTitle)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .multilineTextAlignment(.center)
+            
+            Text("\(String(format: "%.0f", weight)) lbs")
+                .font(.largeTitle)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+            
+            Slider(value: $weight, in: 0...40, step: 1)
+                .accentColor(.whiskred)
+            
+            if weight <= 10 {
+                Text("☺️")
+                    .font(.title)
+            } else if weight > 10 && weight <= 20 {
+                Text("😁")
+                    .font(.title)
+            } else if weight > 20 && weight <= 30 {
+                Text("😲")
+                    .font(.title)
+            } else {
+                Text("😳")
+                    .font(.title)
+            }
+            
+            
+            Spacer()
+        }
+        .padding(30)
+    }
+    
+    private var lastVetVisitSection: some View {
+        VStack(spacing: 20){
+            Spacer()
+            
+            Text("When was \(name) last taken to the vet?")
+                .multilineTextAlignment(.center)
+                .font(.largeTitle)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+            
+            
+            ZStack{
+                Rectangle()
+                    .frame(height: 350)
+                    .cornerRadius(30)
+                    .foregroundColor(.white)
+                VStack{
+                    CustomDatePicker(date: $lastVetVisit)
+                        .onChange(of: lastVetVisit) {
+                            vetString = formattedDate(lastVetVisit)
+                        }
+                    Text("\(name)'s last vet visit was on: ")
+                        .multilineTextAlignment(.center)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.whiskred)
+                    Text("\(vetString)")
+                        .multilineTextAlignment(.center)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.whiskred)
+                }
+                
+                
+            }
+            
+            
+            
+            Spacer()
+            Spacer()
+        }
+        .padding(30)
+    }
+
+    
+    private var finalOnboardingView: some View {
+        VStack {
+            Text("Here's what we got from you!")
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
+                .padding(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            ZStack {
+                Rectangle()
+                    .frame(height: 500)
+                    .foregroundColor(.whiskred)
+                    .cornerRadius(25)
+                    .padding()
+
+                HStack {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("\(name)")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                     
+                        infoCell(info:"Gender: \(gender == 0 ? "Male" : "Female")")
+                        infoCell(info:"Age: \(age[0]) years and \(age[1]) months" )
+                        infoCell(info: "Weight: \(String(format: "%.0f", weight))lbs")
+                        infoCell(info: "Breed: \(selectedBreed)")
+                        infoCell(info:"Last vet visit: \(formattedDate(lastVetVisit))" )
+                        
+                        Spacer()
+                            .frame(height: 10)
+                        
+                        Text("        Please go back to change any incorrect information")
+                            .multilineTextAlignment(.center)
+                            .font(.caption)
+                            .foregroundColor(.white)
+                    }
+                    .padding(.leading)
+                    Spacer()
+                }
+                .padding()
+            }
         }
     }
-    
-   
 
-    
     
 }
-
-// MARK: FUNCTIONS
-
-extension OnboardingView{
     
-
-    func getAge(from birthdate: Date) -> (years: Int, months: Int) {
-        let calendar = Calendar.current
-        let now = Date()
-        
-        let components = calendar.dateComponents([.year, .month], from: birthdate, to: now)
-        
-        return (components.year ?? 0, components.month ?? 0)
-    }
-
-    func handleNextButtonPressed() {
-        
-        //CHECK INPUTS
-        switch onboardingState {
-        case 1:
-            guard name.count >= 1 else {
-                showAlert(title: "Your name must be atleast 3 characters long 😜 ")
-                return
-            }
-        case 2:
-            guard age[0] > 0 || age[1] > 0 else {
-                showAlert(title: "Please enter a valid birthdate 🥸")
-                return
-            }
-        case 3:
-            guard selectedBreed.count >= 1 else {
-                showAlert(title: "Please select a breed 🐈")
-                return
-
-            }
-        default:
-            break
-        }
+    // MARK: FUNCTIONS
     
+    extension OnboardingView{
         
-        //GO TO NEXT SECTION
-        if onboardingState == 4 {
-            //sign in
-            signIn()
-        } else {
-            transitionState = 0
-            withAnimation(.spring()){
-                onboardingState += 1
-            }
+        
+        func getAge(from birthdate: Date) -> (years: Int, months: Int) {
+            let calendar = Calendar.current
+            let now = Date()
+            
+            let components = calendar.dateComponents([.year, .month], from: birthdate, to: now)
+            
+            return (components.year ?? 0, components.month ?? 0)
         }
         
-    }
-    
-    func handleBackButtonPRessed() {
-        if onboardingState != 0 {
-            transitionState = 1
-            withAnimation(.spring()){
-                onboardingState -= 1
+        func handleNextButtonPressed() {
+            
+            //CHECK INPUTS
+            switch onboardingState {
+            case 1:
+                guard name.count >= 1 else {
+                    showAlert(title: "Your name must be atleast 3 characters long 😜 ")
+                    return
+                }
+            case 2:
+                guard age[0] > 0 || age[1] > 0 else {
+                    showAlert(title: "Please enter a valid birthdate 🥸")
+                    return
+                }
+            case 3:
+                guard selectedBreed.count >= 1 else {
+                    showAlert(title: "Please select a breed 🐈")
+                    return
+                    
+                }
+            default:
+                break
+            }
+            
+            
+            //GO TO NEXT SECTION
+            if onboardingState == 6 {
+                //sign in
+                signIn()
+            } else {
+                transitionState = 0
+                withAnimation(.spring()){
+                    onboardingState += 1
+                }
+            }
+            
+        }
+        
+        func handleBackButtonPRessed() {
+            if onboardingState != 0 {
+                transitionState = 1
+                withAnimation(.spring()){
+                    onboardingState -= 1
+                }
             }
         }
-    }
-    
-    func signIn() {
-        currentAge = age[0]
-        currentUserName = name
-        currentGender = gender
         
-        withAnimation(.spring()) {
-            currentUserSignedIn = true
+        func signIn() {
+            currentUserName = name
+            currentAge = age[0]
+            if gender == 0 {
+                currentGender = "Male"
+            } else { currentGender = "Female"}
+            currentBreed = selectedBreed
+            currentWeight = weight
+            vetVisit = vetString
+            
+            
+            
+            
+            withAnimation(.spring()) {
+                currentUserSignedIn = true
+            }
         }
-    }
-    
-    func showAlert(title: String){
-        alertTitle = title
-        showAlert.toggle()
-    }
-    
-    func loadBreeds() -> [String] {
-        guard let url = Bundle.main.url(forResource: "cat-breeds", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let decoded = try? JSONDecoder().decode([String].self, from: data) else {
-            print("⚠️ Failed to load breeds.json")
-            return []
+        
+        func showAlert(title: String){
+            alertTitle = title
+            showAlert.toggle()
         }
-        return decoded
+        
+        func loadBreeds() -> [String] {
+            guard let url = Bundle.main.url(forResource: "cat-breeds", withExtension: "json"),
+                  let data = try? Data(contentsOf: url),
+                  let decoded = try? JSONDecoder().decode([String].self, from: data) else {
+                print("⚠️ Failed to load breeds.json")
+                return []
+            }
+            return decoded
+        }
+        
+        func formattedDate(_ date: Date) -> String {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            return formatter.string(from: date)
+        }
+        private var dateFormatter: DateFormatter {
+                let formatter = DateFormatter()
+                formatter.dateStyle = .medium
+                return formatter
+            }
+
+        
     }
 
-}
 
