@@ -82,7 +82,10 @@ struct OnboardingView: View {
                 switch onboardingState {
                 case 0:
                     welcomeSection
+                        .background(Color.whiskrYellow)
+                        .ignoresSafeArea()
                         .transition(transition1)
+
 
                 case 1:
                     LinearGradient(
@@ -203,7 +206,6 @@ struct OnboardingView: View {
 
 #Preview {
     OnboardingView()
-        .background(Color.whiskrYellow)
 }
 
 //: MARK: COMPONENTS

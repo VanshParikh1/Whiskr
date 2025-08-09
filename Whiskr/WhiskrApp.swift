@@ -9,7 +9,13 @@ import SwiftUI
 import SwiftData
 
 @main
+
+
 struct WhiskrApp: App {
+    
+    @AppStorage("signed_in") var currentUserSignedIn: Bool = false
+
+
     init(){
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithOpaqueBackground()
@@ -36,7 +42,17 @@ struct WhiskrApp: App {
 
     var body: some Scene {
         WindowGroup {
-            WhiskrTabView()
+            if (currentUserSignedIn){
+                WhiskrTabView()
+                    .background(Color.whiskrYellow)
+                    .ignoresSafeArea()
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .top),
+                        removal: .move(edge: .bottom)))
+
+            } else{
+                OnboardingView()
+            }
         }
         .modelContainer(sharedModelContainer)
     }
