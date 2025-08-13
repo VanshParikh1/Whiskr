@@ -17,6 +17,8 @@ struct WhiskrApp: App {
 
 
     init(){
+       
+
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithOpaqueBackground()
         tabBarAppearance.backgroundColor = UIColor(Color(.tabYellow))
@@ -42,17 +44,23 @@ struct WhiskrApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if (currentUserSignedIn){
-                WhiskrTabView()
-                    .background(Color.whiskrYellow)
-                    .ignoresSafeArea()
-                    .transition(.asymmetric(
-                        insertion: .move(edge: .top),
-                        removal: .move(edge: .bottom)))
-
-            } else{
-                OnboardingView()
+            ZStack {
+                if currentUserSignedIn {
+                    WhiskrTabView()
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .top),
+                            removal: .move(edge: .bottom)))
+                        .ignoresSafeArea()
+                } else {
+                    OnboardingView()
+                        .background(.whiskrYellow)
+                        .ignoresSafeArea()
+                        .transition(.asymmetric(
+                            insertion: .move(edge: .top),
+                            removal: .move(edge: .bottom)))
+                }
             }
+            .animation(.easeInOut, value: currentUserSignedIn)
         }
         .modelContainer(sharedModelContainer)
     }

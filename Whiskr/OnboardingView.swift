@@ -17,7 +17,7 @@ struct OnboardingView: View {
      4 - Add weight
      5 - Last vet visit
      */
-    @State var onboardingState: Int = 0
+    @State var onboardingState: Int = 6
     
     
     let transition1: AnyTransition = .asymmetric(
@@ -61,7 +61,7 @@ struct OnboardingView: View {
     
     //app storage
     
-    @AppStorage("name") var currentUserName: String?
+    @AppStorage("name") var currentName: String?
     @AppStorage("gender") var currentGender: String?
     @AppStorage("age") var currentAge: Int?
     @AppStorage("breed") var currentBreed: String?
@@ -180,14 +180,19 @@ struct OnboardingView: View {
             
             VStack{
                 if onboardingState > 0{
+                    Spacer()
+                        .frame(height: 20)
                     backButton
                         .padding()
-                    Spacer(minLength:640)
+                    Spacer(minLength:600)
                     bottomButton
-                    Spacer(minLength: 60)
+                    Spacer()
+                        .frame(height: 100)
                 } else {
                     Spacer()
                     bottomButton
+                    Spacer()
+                        .frame(height: 50)
                 }
                 
                 
@@ -206,6 +211,7 @@ struct OnboardingView: View {
 
 #Preview {
     OnboardingView()
+        .background(.whiskrYellow)
 }
 
 //: MARK: COMPONENTS
@@ -522,8 +528,9 @@ extension OnboardingView {
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
-                .padding(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .center)
+                .multilineTextAlignment(.center)
             
             ZStack {
                 Rectangle()
@@ -548,7 +555,7 @@ extension OnboardingView {
                         Spacer()
                             .frame(height: 10)
                         
-                        Text("        Please go back to change any incorrect information")
+                        Text("Please go back to change any incorrect information")
                             .multilineTextAlignment(.center)
                             .font(.caption)
                             .foregroundColor(.white)
@@ -558,6 +565,8 @@ extension OnboardingView {
                 }
                 .padding()
             }
+            Spacer()
+                .frame(height: 50)
         }
     }
 
@@ -584,7 +593,7 @@ extension OnboardingView {
             switch onboardingState {
             case 1:
                 guard name.count >= 1 else {
-                    showAlert(title: "Your name must be atleast 3 characters long 😜 ")
+                    showAlert(title: "Please enter a valid name 😜 ")
                     return
                 }
             case 2:
@@ -626,7 +635,7 @@ extension OnboardingView {
         }
         
         func signIn() {
-            currentUserName = name
+            currentName = name
             currentAge = age[0]
             if gender == 0 {
                 currentGender = "Male"

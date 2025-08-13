@@ -7,7 +7,18 @@
 
 import SwiftUI
 
+
+
 struct HomeProfileView: View {
+    
+    @AppStorage("name") var currentName: String?
+    @AppStorage("gender") var currentGender: String?
+    @AppStorage("age") var currentAge: Int?
+    @AppStorage("breed") var currentBreed: String?
+    @AppStorage("weight") var currentWeight: Double?
+    @AppStorage("vetVisit")  var vetVisit: String = ""
+    
+    
     let columns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
     
     
@@ -27,20 +38,18 @@ struct HomeProfileView: View {
                 .ignoresSafeArea()
             
             VStack{
+                Spacer(minLength: 100)
                 HStack{
-                    Text("Romeo")
-                        .font(.largeTitle)
+                    Text(currentName ?? "Hello")
+                        .font(.system(size: 50))
                         .fontWeight(.bold)
                         .foregroundColor(Color(.white))
                     Spacer()
-                    Text("Edit")
-                        .foregroundColor(Color(.whiskred))
-                        .fontWeight(.bold)
+                    
                 }
                 .padding()
-                Circle()
-                    .frame(width:250)
-                    .foregroundColor(.white)
+                
+                CatProfilePhotoView()
                     .padding()
            
                 LazyVGrid(columns: columns){
@@ -52,8 +61,8 @@ struct HomeProfileView: View {
                 .padding(.horizontal)
                 HealthCell(stat: HealthStat(title: "Notes", icon: "text.document"))
                     .padding(.horizontal)
+                Spacer(minLength: 150)
             }
-            Spacer()
             
         }
     }
