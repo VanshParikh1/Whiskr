@@ -18,55 +18,105 @@ struct HomeProfileView: View {
     @AppStorage("weight") var currentWeight: Double?
     @AppStorage("vetVisit")  var vetVisit: String = ""
     
+    @State private var showingSheet: Bool = false
+    @State private var selectedStat: HealthStat? = nil
     
     let columns: [GridItem] = [GridItem(.flexible()), GridItem(.flexible())]
     
-    
     let healthStats: [HealthStat] = [
-            HealthStat(title: "Weight",icon: "dumbbell"),
-            HealthStat(title: "Age",icon: "calendar"),
-            HealthStat(title: "Breed",icon: "pawprint"),
-            HealthStat(title: "Last Vet Visit",icon: "stethoscope")]
-
+        HealthStat(title: "Weight",icon: "dumbbell"),
+        HealthStat(title: "Age",icon: "calendar"),
+        HealthStat(title: "Breed",icon: "pawprint"),
+        HealthStat(title: "Last Vet Visit",icon: "stethoscope"),
+    ]
+    
     var body: some View {
-        ZStack{
+        ZStack {
             LinearGradient(
-                gradient: Gradient( colors: [Color(.whiskrYellow), .white]),
-                startPoint:.topLeading,
+                gradient: Gradient(colors: [Color(.whiskrYellow), .white]),
+                startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
-                .ignoresSafeArea()
+            .ignoresSafeArea()
             
             VStack{
                 Spacer(minLength: 100)
+                
                 HStack{
                     Text(currentName ?? "Hello")
                         .font(.system(size: 50))
                         .fontWeight(.bold)
-                        .foregroundColor(Color(.white))
+                        .foregroundColor(.white)
                     Spacer()
-                    
                 }
                 .padding()
                 
                 CatProfilePhotoView()
                     .padding()
-           
-                LazyVGrid(columns: columns){
+                
+                LazyVGrid(columns: columns) {
                     ForEach(healthStats) { stat in
                         HealthCell(stat: stat)
+                            .onTapGesture {
+                                selectedStat = stat
+                                showingSheet = true
+                            }
                     }
-                    
                 }
                 .padding(.horizontal)
+                
                 HealthCell(stat: HealthStat(title: "Notes", icon: "text.document"))
-                    .padding(.horizontal)
+                .padding(.horizontal)
+                .onTapGesture {
+                    selectedStat = HealthStat(title: "Notes", icon: "text.document")
+                    showingSheet = true
+                }
+
+                
                 Spacer(minLength: 150)
             }
-            
+            .sheet(item: $selectedStat) { stat in
+                switch stat.title {
+                    case "Weight":
+                        WeightDetailView()
+                    case "Age":
+                        AgeDetailView()
+                    case "Breed":
+                        BreedDetailView()
+                    case "Last Vet Visit":
+                        VetVisitDetailView()
+                    case "Notes":
+                        NotesDetailView()
+                    default:
+                        WeightDetailView()
+
+                    }
+                }
         }
     }
 }
+
+// Enum to track which health stat is being edited
+enum HealthStatType: String, Identifiable, CaseIterable {
+    var id: String { rawValue }
+    
+    case weight
+    case age
+    case breed
+    case vetVisit
+    case notes
+    
+    var healthStat: HealthStat {
+        switch self {
+        case .weight: return HealthStat(title: "Weight", icon: "dumbbell")
+        case .age: return HealthStat(title: "Age", icon: "calendar")
+        case .breed: return HealthStat(title: "Breed", icon: "pawprint")
+        case .vetVisit: return HealthStat(title: "Last Vet Visit", icon: "stethoscope")
+        case .notes: return HealthStat(title: "Notes", icon: "text.document")
+        }
+    }
+}
+
 
 struct HealthStat: Identifiable {
     let id = UUID()

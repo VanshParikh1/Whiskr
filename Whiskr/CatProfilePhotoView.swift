@@ -23,7 +23,7 @@ struct CatProfilePhotoView: View {
             .foregroundColor(.white)
             .padding(.horizontal)
             .padding(.vertical, 8)
-            .background(Color.whiskrYellow)
+            .background(Color.whiskred)
             .cornerRadius(8)
         }
         .onAppear {

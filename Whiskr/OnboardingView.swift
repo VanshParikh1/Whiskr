@@ -17,7 +17,7 @@ struct OnboardingView: View {
      4 - Add weight
      5 - Last vet visit
      */
-    @State var onboardingState: Int = 6
+    @State var onboardingState: Int = 0
     
     
     let transition1: AnyTransition = .asymmetric(
@@ -63,10 +63,15 @@ struct OnboardingView: View {
     
     @AppStorage("name") var currentName: String?
     @AppStorage("gender") var currentGender: String?
+    
+    @AppStorage("birthdate") var birthdateStorage: Double = Date().timeIntervalSince1970
     @AppStorage("age") var currentAge: Int?
+    
     @AppStorage("breed") var currentBreed: String?
     @AppStorage("weight") var currentWeight: Double?
+    
     @AppStorage("vetVisit")  var vetVisit: String = ""
+    @AppStorage("lastVetVisit") var lastVetVisitStorage: Double = Date().timeIntervalSince1970
 
 
     
@@ -367,6 +372,8 @@ extension OnboardingView {
                             let x = getAge(from: birthdate)
                             age[0] = x.years
                             age[1] = x.months
+                            // Store the birthdate in AppStorage
+                            birthdateStorage = birthdate.timeIntervalSince1970
                         }
                     Text("\(name) is \(age[0]) years and \(age[1]) months old!")
                         .multilineTextAlignment(.center)
@@ -374,11 +381,7 @@ extension OnboardingView {
                         .fontWeight(.semibold)
                         .foregroundColor(.whiskred)
                 }
-                
-                
             }
-            
-            
             
             Spacer()
             Spacer()
@@ -487,7 +490,6 @@ extension OnboardingView {
                 .fontWeight(.semibold)
                 .foregroundColor(.white)
             
-            
             ZStack{
                 Rectangle()
                     .frame(height: 350)
@@ -497,6 +499,8 @@ extension OnboardingView {
                     CustomDatePicker(date: $lastVetVisit)
                         .onChange(of: lastVetVisit) {
                             vetString = formattedDate(lastVetVisit)
+                            // Store the vet visit date in AppStorage
+                            lastVetVisitStorage = lastVetVisit.timeIntervalSince1970
                         }
                     Text("\(name)'s last vet visit was on: ")
                         .multilineTextAlignment(.center)
@@ -509,11 +513,7 @@ extension OnboardingView {
                         .fontWeight(.semibold)
                         .foregroundColor(.whiskred)
                 }
-                
-                
             }
-            
-            
             
             Spacer()
             Spacer()
@@ -521,7 +521,6 @@ extension OnboardingView {
         .padding(30)
     }
 
-    
     private var finalOnboardingView: some View {
         VStack {
             Text("Here's what we got from you!")
@@ -673,10 +672,30 @@ extension OnboardingView {
             return formatter.string(from: date)
         }
         private var dateFormatter: DateFormatter {
-                let formatter = DateFormatter()
-                formatter.dateStyle = .medium
-                return formatter
-            }
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            return formatter
+        }
+        
+        func getCurrentAgeFromStorage() -> (years: Int, months: Int) {
+            let storedBirthdate = Date(timeIntervalSince1970: birthdateStorage)
+            return getAge(from: storedBirthdate)
+        }
+        
+        func daysSinceLastVetVisit() -> Int {
+            let lastVisitDate = Date(timeIntervalSince1970: lastVetVisitStorage)
+            let calendar = Calendar.current
+            let components = calendar.dateComponents([.day], from: lastVisitDate, to: Date())
+            return components.day ?? 0
+        }
+        
+        func getStoredBirthdate() -> Date {
+            return Date(timeIntervalSince1970: birthdateStorage)
+        }
+        
+        func getStoredVetVisitDate() -> Date {
+            return Date(timeIntervalSince1970: lastVetVisitStorage)
+        }
 
         
     }

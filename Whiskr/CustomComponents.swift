@@ -39,3 +39,27 @@ struct CustomDatePicker: UIViewRepresentable {
     }
 }
 
+struct CloseButton: View {
+    let action: () -> Void
+    let title: String
+    
+    init(title: String = "Close", action: @escaping () -> Void) {
+        self.title = title
+        self.action = action
+    }
+    
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity)
+                .frame(height: 55)
+                .background(Color.white)
+                .foregroundColor(.whiskred)
+                .cornerRadius(30)
+                .padding(.horizontal)
+                .shadow(color: Color.whiskred.opacity(0.3), radius: 6, x: 0, y: 4)
+        }
+    }
+}
+
