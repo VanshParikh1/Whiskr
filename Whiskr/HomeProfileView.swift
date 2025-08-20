@@ -79,16 +79,34 @@ struct HomeProfileView: View {
                 switch stat.title {
                     case "Weight":
                         WeightDetailView()
+                        CloseButton{
+                            selectedStat = nil
+                        }
                     case "Age":
                         AgeDetailView()
+                        CloseButton{
+                            selectedStat = nil
+                        }
                     case "Breed":
                         BreedDetailView()
+                        CloseButton{
+                            selectedStat = nil
+                        }
                     case "Last Vet Visit":
                         VetVisitDetailView()
+                        CloseButton{
+                            selectedStat = nil
+                        }
                     case "Notes":
                         NotesDetailView()
+                        CloseButton{
+                            selectedStat = nil
+                        }
                     default:
                         WeightDetailView()
+                        CloseButton{
+                            selectedStat = nil
+                        }
 
                     }
                 }

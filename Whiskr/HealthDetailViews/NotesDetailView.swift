@@ -14,6 +14,7 @@ struct NotesDetailView: View {
     
     @State private var isEditing = false
     @State private var editableNotes = ""
+    @State private var isAnimated = false
     
     var body: some View {
         ZStack {
@@ -59,6 +60,8 @@ struct NotesDetailView: View {
                     Circle()
                         .fill(Color.whiskred.opacity(0.1))
                         .frame(width: 130, height: 130)
+                        .scaleEffect(isAnimated ? 1.1 : 1.0)
+                        .animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: isAnimated)
                     
                     Image(systemName: "note.text")
                         .resizable()
@@ -66,6 +69,9 @@ struct NotesDetailView: View {
                         .frame(width: 80, height: 80)
                         .foregroundColor(.whiskred)
                         .shadow(color: .whiskred.opacity(0.3), radius: 6, x: 0, y: 3)
+                }
+                .onAppear{
+                    isAnimated = true
                 }
                 
                 Text("Notes about \(currentName ?? "your cat")")
@@ -121,16 +127,9 @@ struct NotesDetailView: View {
                 }
                 
                 
-                Spacer()
-                
-                CloseButton {
-                    // Save any unsaved changes before closing
-                    if isEditing {
-                        catNotes = editableNotes
-                    }
-                    print("close notes detail view")
-                }
-                Spacer()
+                Text("Don't forget to hit save before closing!")
+                    .fontWeight(.light)
+                    .foregroundColor(.whiskred)
             }
         }
         .onAppear {
