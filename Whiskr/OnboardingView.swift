@@ -307,12 +307,27 @@ extension OnboardingView {
                 .fontWeight(.semibold)
                 .foregroundColor(.white)
             
-            TextField("Your cats name here...", text: $name)
-                .multilineTextAlignment(.center)
-                .font(.headline)
-                .frame(height: 55)
-                .background(Color.white)
-                .cornerRadius(10)
+            TextField(
+                "Your cats name here...",
+                text: Binding(
+                    get: { name },
+                    set: { newValue in
+                        // remove trailing spaces
+                        name = newValue.replacingOccurrences(
+                            of: "\\s+$",
+                            with: "",
+                            options: .regularExpression
+                        )
+                    }
+                )
+            )
+            .multilineTextAlignment(.center)
+            .font(.headline)
+            .frame(height: 55)
+            .background(Color.white)
+            .cornerRadius(10)
+
+                
             
             HStack(spacing: 0) {
                 ZStack(alignment: gender == 0 ? .leading : .trailing) {

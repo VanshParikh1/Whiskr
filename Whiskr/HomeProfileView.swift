@@ -30,6 +30,7 @@ struct HomeProfileView: View {
         HealthStat(title: "Last Vet Visit",icon: "stethoscope"),
     ]
     
+    
     var body: some View {
         ZStack {
             LinearGradient(
@@ -74,6 +75,7 @@ struct HomeProfileView: View {
 
                 
                 Spacer(minLength: 150)
+                
             }
             .sheet(item: $selectedStat) { stat in
                 switch stat.title {

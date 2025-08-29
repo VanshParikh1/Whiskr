@@ -24,9 +24,9 @@ struct WhiskrTabView: View {
                         Label("Dr.MEO", systemImage: "cat")
                     }
                 
-                LitterCalendarView()
+                RemindersView()
                     .tabItem{
-                        Label("LITTER", systemImage: "toilet")
+                        Label("REMINDERS", systemImage: "alarm.fill")
                     }
             }
             .accentColor(.whiskred)
