@@ -11,6 +11,8 @@ struct RemindersView: View {
     @StateObject private var reminderManager = ReminderManager()
     @AppStorage("name") var catName: String?
     
+    @State private var showingAddReminder = false
+    
     
     var body: some View {
         ZStack {
@@ -20,6 +22,9 @@ struct RemindersView: View {
                 endPoint: .bottomTrailing
                 )
             .ignoresSafeArea()
+            .sheet(isPresented: $showingAddReminder) {
+                AddReminderView(reminderManager: reminderManager)
+            }
             
             VStack(spacing:20) {
                 //Header
@@ -36,6 +41,13 @@ struct RemindersView: View {
                         
                     }
                     Spacer()
+                    
+                    Button(action: { showingAddReminder = true}) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size:30))
+                            .foregroundColor(.whiskred)
+                    }
+                    .padding()
                 }
                 .padding(.horizontal)
                 
