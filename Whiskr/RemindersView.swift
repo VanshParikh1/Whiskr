@@ -13,21 +13,20 @@ struct RemindersView: View {
     
     @State private var showingAddReminder = false
     
-    
     var body: some View {
         ZStack {
             LinearGradient(
                 gradient: Gradient(colors: [Color(.whiskrYellow), .white]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
-                )
+            )
             .ignoresSafeArea()
             .sheet(isPresented: $showingAddReminder) {
                 AddReminderView(reminderManager: reminderManager)
             }
             
-            VStack(spacing:20) {
-                //Header
+            VStack(spacing: 20) {
+                // Header
                 HStack {
                     VStack(alignment: .leading) {
                         Text("Reminders")
@@ -38,86 +37,156 @@ struct RemindersView: View {
                         Text("Keeping \(catName ?? "your cat") on track!")
                             .font(.system(size: 20))
                             .foregroundColor(.whiskred.opacity(0.8))
-                        
                     }
                     Spacer()
                     
-                    Button(action: { showingAddReminder = true}) {
+                    Button(action: { showingAddReminder = true }) {
                         Image(systemName: "plus.circle.fill")
-                            .font(.system(size:30))
+                            .font(.system(size: 30))
                             .foregroundColor(.whiskred)
                     }
                     .padding()
                 }
                 .padding(.horizontal)
                 
-                //Simple scroll list of reminders
-                ScrollView {
-                    LazyVStack(spacing: 25) {
-                        ForEach(reminderManager.reminders, id: \.id){ reminder in
-                            BasicReminderCard(reminder: reminder, reminderManager: reminderManager)
+                // Simplified list of reminders
+                List {
+                    // Active Reminders Section
+                    let activeReminders = reminderManager.reminders.filter { $0.isEnabled }
+                    if !activeReminders.isEmpty {
+                        Section(header:
+                                    Text("Active Reminders")
+                            .font(.headline)
+                            .foregroundColor(.whiskred)
+                            .textCase(nil)
+                        ) {
+                            ForEach(activeReminders) { reminder in
+                                EnhancedReminderCard(reminder: reminder, reminderManager: reminderManager)
+                                    .listRowBackground(Color.clear)
+                                    .listRowSeparator(.hidden)
+                                    .listRowInsets(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
+                            }
+                            .onDelete { indexSet in
+                                indexSet.forEach { i in
+                                    let reminder = activeReminders[i]
+                                    reminderManager.deleteReminder(id: reminder.id)
+                                }
+                            }
                         }
                     }
-                    .padding(.horizontal)
+                    
+                    // Disabled Section
+                    let disabled = reminderManager.reminders.filter { !$0.isEnabled }
+                    if !disabled.isEmpty {
+                        Section(header:
+                                    Text("Disabled")
+                            .font(.headline)
+                            .foregroundColor(.whiskred)
+                            .textCase(nil)
+                        ) {
+                            ForEach(disabled) { reminder in
+                                EnhancedReminderCard(reminder: reminder, reminderManager: reminderManager)
+                                    .listRowBackground(Color.clear)
+                                    .listRowSeparator(.hidden)
+                                    .listRowInsets(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
+                            }
+                            .onDelete { indexSet in
+                                indexSet.forEach { i in
+                                    let reminder = disabled[i]
+                                    reminderManager.deleteReminder(id: reminder.id)
+                                }
+                            }
+                        }
+                    }
                 }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .background(Color.clear)
                 
                 Spacer()
             }
         }
+        .onAppear {
+            reminderManager.cleanupExpiredOneTimeReminders()
+            reminderManager.requestNotificationPermission()
+        }
     }
 }
 
-//Simple reminder card
-struct BasicReminderCard: View {
+struct EnhancedReminderCard: View {
     let reminder: CatReminder
     let reminderManager: ReminderManager
+    
+    private var nextDueDateString: String {
+        let formatter = DateFormatter()
+        let calendar = Calendar.current
+        
+        if calendar.isDate(reminder.nextDue, inSameDayAs: Date()) {
+            formatter.timeStyle = .short
+            return "Today at \(formatter.string(from: reminder.nextDue))"
+        } else if calendar.isDate(reminder.nextDue, inSameDayAs: calendar.date(byAdding: .day, value: 1, to: Date()) ?? Date()) {
+            formatter.timeStyle = .short
+            return "Tomorrow at \(formatter.string(from: reminder.nextDue))"
+        } else {
+            formatter.dateStyle = .medium
+            formatter.timeStyle = .short
+            return formatter.string(from: reminder.nextDue)
+        }
+    }
+    
     var body: some View {
         HStack {
-            //Icon
-            Image(systemName: reminder.category.icon)
-                .foregroundColor(.whiskred)
-                .font(.system(size: 40))
-                .frame(width: 60)
+            // Category Icon with color
+            ZStack {
+                Circle()
+                    .fill(reminder.category.color.opacity(0.2))
+                    .frame(width: 50, height: 50)
+                
+                Image(systemName: reminder.category.icon)
+                    .foregroundColor(reminder.category.color)
+                    .font(.title3)
+            }
             
-            //Reminder info
-            VStack(alignment: .leading, spacing: 4){
+            // Reminder Info
+            VStack(alignment: .leading, spacing: 4) {
                 Text(reminder.title)
                     .font(.headline)
                     .foregroundColor(.whiskred)
                 
-                Text(reminder.category.rawValue)
-                    .font(.caption)
-                    .foregroundColor(.whiskred.opacity(0.6))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(reminder.category.rawValue)
+                        .font(.caption)
+                        .foregroundColor(.whiskred.opacity(0.6))
+                    
+                    Text("Next: \(nextDueDateString)")
+                        .font(.caption)
+                        .foregroundColor(.whiskred.opacity(0.8))
+                }
             }
+            
             Spacer()
             
-            //Status
-            VStack{
-                Text(reminder.isEnabled ? "ON" : "OFF")
-                    .font(.caption)
-                    .fontWeight(.bold)
-                    .foregroundColor(reminder.isEnabled ? .green : .whiskred)
-                    .padding(.horizontal)
+            // Action Buttons
+            HStack(spacing: 15) {
                 
-                //Simple toggle button
+                // Toggle enabled/disabled
                 Button(action: {
-                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)){
+                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                         reminderManager.toggleReminder(id: reminder.id)
                     }
-                    
                 }) {
                     Image(systemName: reminder.isEnabled ? "bell.fill" : "bell.slash")
                         .foregroundColor(reminder.isEnabled ? .whiskred : .gray)
-                        .scaleEffect(reminder.isEnabled ? 1.0 : 0.9)
-                        .animation(.spring(response: 0.4, dampingFraction: 0.7), value: reminder.isEnabled)
+                        .font(.title2)
+                        .frame(width: 44, height: 44)
                 }
             }
         }
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 15)
-                .fill(Color.white.opacity(0.6))
-                .shadow(color: .whiskred.opacity(0.1), radius: 4, x: 0, y: 0)
+                .fill(Color.white.opacity(0.8))
+                .shadow(color: .whiskred.opacity(0.1), radius: 4, x: 0, y: 2)
         )
     }
 }

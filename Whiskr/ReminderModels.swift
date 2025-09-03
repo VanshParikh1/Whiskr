@@ -13,10 +13,21 @@ struct CatReminder: Identifiable, Codable {
     let id = UUID()
     var title: String
     var category: ReminderCategory
+    var frequency: ReminderFrequency
+    var customDays: Int? // Only used when frequency is .custom
     var isEnabled: Bool
     var nextDue: Date
+    
+    // Computed property to get actual interval in days
+    var intervalInDays: Int {
+        switch frequency {
+        case .once: return 0
+        case .daily: return 1
+        case .weekly: return 7
+        case .custom: return customDays ?? 2
+        }
+    }
 }
-
 //MARK: Reminder Categories
 enum ReminderCategory: String, CaseIterable, Codable {
     case litter = "Clean litter"
@@ -38,4 +49,23 @@ enum ReminderCategory: String, CaseIterable, Codable {
         case .vetVisit: return .whiskredDark
         }
     }
+}
+
+
+//MARK: Reminder Frequency
+enum ReminderFrequency: String, CaseIterable, Codable {
+    case once = "Once"
+    case daily = "Daily"
+    case weekly = "Weekly"
+    case custom = "Custom"
+    
+    var defaultInterval: Int {
+            switch self {
+            case .once: return 0
+            case .daily: return 1
+            case .weekly: return 7
+            case .custom: return 2 // Default to 3 days
+            }
+        }
+    
 }

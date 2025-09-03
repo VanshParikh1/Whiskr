@@ -14,6 +14,8 @@ struct AddReminderView: View {
     @State private var title = ""
     @State private var selectedCategory = ReminderCategory.litter
     @State private var nextDueDate = Date()
+    @State private var selectedFrequency = ReminderFrequency.custom
+    @State private var customDays = 2
     
     var body: some View {
         NavigationView {
@@ -65,9 +67,56 @@ struct AddReminderView: View {
                             }
                         }
                     }
+                    // Frequency Selection
+                    VStack(alignment: .leading) {
+                        Text("How Often?")
+                            .font(.headline)
+                            .foregroundColor(.whiskred)
+                        
+                        // Frequency picker
+                        Picker("Frequency", selection: $selectedFrequency) {
+                            ForEach(ReminderFrequency.allCases, id: \.self) { frequency in
+                                Text(frequency.rawValue)
+                                    .tag(frequency)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(.whiskred)
+                                .frame(height: 35)
+                            
+                            
+                        )
+                        
+                        
+                        
+                        if selectedFrequency == .custom {
+                            HStack {
+                                Spacer()
+                                    .frame(width: 140)
+                                VStack {
+                                    Text("\(customDays)")
+                                        .font(.system(size: 45))
+                                        .foregroundColor(.whiskred)
+                                    Text("Days")
+                                        .font(.headline)
+                                        .foregroundColor(.whiskred)
+                                    
+                                    
+                                    Stepper("", value: $customDays, in: 2...30)
+                                        .labelsHidden()
+                                }
+                                .padding(.top, 10)
+                            }
+                            
+                            
+                            
+                        }
+                    }
                     
                     // Next Due Date
-                    VStack {
+                    VStack(alignment: .leading) {
                         Text("Next Due")
                             .font(.headline)
                             .foregroundColor(.whiskred)
@@ -80,11 +129,12 @@ struct AddReminderView: View {
                     
                     Spacer()
                     
-                    // Save Button
                     Button("Add Reminder") {
                         let newReminder = CatReminder(
                             title: title,
                             category: selectedCategory,
+                            frequency: selectedFrequency,
+                            customDays: selectedFrequency == .custom ? customDays : nil,
                             isEnabled: true,
                             nextDue: nextDueDate
                         )
