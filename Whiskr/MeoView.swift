@@ -24,7 +24,7 @@ struct MeoView: View {
                     HStack {
                         
                         Text("Dr.Meo")
-                            .font(.system(size: 40))
+                            .font(.system(size: 50))
                             .fontWeight(.bold)
                             .foregroundColor(.whiskred)
                         
@@ -37,11 +37,11 @@ struct MeoView: View {
                             .clipShape(Circle())
                             .overlay(Circle().stroke(Color.black, lineWidth: 1))
                     }
-                    .padding()
+                    .padding(.horizontal)
                     
                     Divider()
                 }
-                
+                                
                 // Chat messages
                 ScrollViewReader { proxy in
                     ScrollView {

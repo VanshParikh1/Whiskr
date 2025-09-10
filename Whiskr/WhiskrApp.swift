@@ -22,7 +22,7 @@ struct WhiskrApp: App {
 
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithOpaqueBackground()
-        tabBarAppearance.backgroundColor = UIColor(Color(.tabYellow))
+        tabBarAppearance.backgroundColor = UIColor(Color(.tabYellow.opacity(0.6)))
         
         UITabBar.appearance().standardAppearance = tabBarAppearance
         

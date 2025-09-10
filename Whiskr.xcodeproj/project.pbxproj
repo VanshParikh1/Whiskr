@@ -29,22 +29,9 @@
 		5895C8332E357DDB009EB626 /* WhiskrUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhiskrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		585403202E4C05C400A422E2 /* Exceptions for "Whiskr" folder in "Whiskr" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 5895C8192E357DD7009EB626 /* Whiskr */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		5895C81C2E357DD7009EB626 /* Whiskr */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				585403202E4C05C400A422E2 /* Exceptions for "Whiskr" folder in "Whiskr" target */,
-			);
 			path = Whiskr;
 			sourceTree = "<group>";
 		};
@@ -411,10 +398,10 @@
 				DEVELOPMENT_TEAM = HA64MP7QYK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Whiskr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Whiskr: Cat's Best Friend";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to take photo of your cat";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera so you can take a photo of your cat 🐾";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library so you can pick a cat photo 🐾";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -444,10 +431,10 @@
 				DEVELOPMENT_TEAM = HA64MP7QYK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Whiskr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Whiskr: Cat's Best Friend";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to take photo of your cat";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera so you can take a photo of your cat 🐾";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library so you can pick a cat photo 🐾";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -41,16 +41,20 @@ struct HomeProfileView: View {
             .ignoresSafeArea()
             
             VStack{
-                Spacer(minLength: 100)
-                
                 HStack{
-                    Text(currentName ?? "Hello")
+                    Text(currentName ?? "Your Cat")
                         .font(.system(size: 50))
                         .fontWeight(.bold)
-                        .foregroundColor(.white)
+                        .foregroundColor(.whiskred)
                     Spacer()
                 }
-                .padding()
+                .padding(.horizontal)
+                .padding(.top, 100)
+                
+                Divider()
+                    .padding(.bottom, 40)
+                
+                
                 
                 CatProfilePhotoView()
                     .padding()

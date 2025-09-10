@@ -25,7 +25,8 @@ struct RemindersView: View {
                 AddReminderView(reminderManager: reminderManager)
             }
             
-            VStack(spacing: 20) {
+            VStack {
+                Spacer()
                 // Header
                 HStack {
                     VStack(alignment: .leading) {
@@ -48,6 +49,8 @@ struct RemindersView: View {
                     .padding()
                 }
                 .padding(.horizontal)
+                
+                Divider()
                 
                 // Simplified list of reminders
                 List {

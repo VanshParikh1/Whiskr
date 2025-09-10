@@ -14,7 +14,7 @@ struct AddReminderView: View {
     @State private var title = ""
     @State private var selectedCategory = ReminderCategory.litter
     @State private var nextDueDate = Date()
-    @State private var selectedFrequency = ReminderFrequency.custom
+    @State private var selectedFrequency = ReminderFrequency.once
     @State private var customDays = 2
     
     var body: some View {
@@ -89,30 +89,22 @@ struct AddReminderView: View {
                             
                         )
                         
+                    }
+                    if selectedFrequency == .custom {
                         
-                        
-                        if selectedFrequency == .custom {
-                            HStack {
-                                Spacer()
-                                    .frame(width: 140)
-                                VStack {
-                                    Text("\(customDays)")
-                                        .font(.system(size: 45))
-                                        .foregroundColor(.whiskred)
-                                    Text("Days")
-                                        .font(.headline)
-                                        .foregroundColor(.whiskred)
-                                    
-                                    
-                                    Stepper("", value: $customDays, in: 2...30)
-                                        .labelsHidden()
-                                }
-                                .padding(.top, 10)
+                            VStack {
+                                Text("\(customDays)")
+                                    .font(.system(size: 45))
+                                    .foregroundColor(.whiskred)
+                                Text("Days")
+                                    .font(.headline)
+                                    .foregroundColor(.whiskred)
+                                
+                                
+                                Stepper("", value: $customDays, in: 2...30)
+                                    .labelsHidden()
                             }
-                            
-                            
-                            
-                        }
+                         
                     }
                     
                     // Next Due Date
@@ -151,6 +143,7 @@ struct AddReminderView: View {
                 .padding()
             }
             .navigationTitle("New Reminder")
+            .foregroundColor(.whiskred)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
