@@ -19,7 +19,7 @@ struct WhiskrTabView: View {
                         Label("HOME", systemImage: "house")
 
                     }
-                MeoView()
+                DrMeoView()
                     .tabItem{
                         Label("Dr.MEO", systemImage: "cat")
                     }

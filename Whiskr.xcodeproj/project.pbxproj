@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		589297DB2EB6B8DA00C7D20C /* Secrets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 589297DA2EB6B8DA00C7D20C /* Secrets.xcconfig */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		5895C82A2E357DDB009EB626 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,14 +28,28 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		589297DA2EB6B8DA00C7D20C /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		5895C81A2E357DD7009EB626 /* Whiskr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Whiskr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5895C8292E357DDB009EB626 /* WhiskrTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhiskrTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5895C8332E357DDB009EB626 /* WhiskrUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhiskrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		589297DD2EB6B8F900C7D20C /* Exceptions for "Whiskr" folder in "Whiskr" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 5895C8192E357DD7009EB626 /* Whiskr */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		5895C81C2E357DD7009EB626 /* Whiskr */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				589297DD2EB6B8F900C7D20C /* Exceptions for "Whiskr" folder in "Whiskr" target */,
+			);
 			path = Whiskr;
 			sourceTree = "<group>";
 		};
@@ -79,6 +97,7 @@
 				5895C82C2E357DDB009EB626 /* WhiskrTests */,
 				5895C8362E357DDB009EB626 /* WhiskrUITests */,
 				5895C81B2E357DD7009EB626 /* Products */,
+				589297DA2EB6B8DA00C7D20C /* Secrets.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -212,6 +231,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				589297DB2EB6B8DA00C7D20C /* Secrets.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,6 +291,7 @@
 /* Begin XCBuildConfiguration section */
 		5895C83B2E357DDB009EB626 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 589297DA2EB6B8DA00C7D20C /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -390,6 +411,7 @@
 		};
 		5895C83E2E357DDB009EB626 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 589297DA2EB6B8DA00C7D20C /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -398,6 +420,7 @@
 				DEVELOPMENT_TEAM = HA64MP7QYK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Whiskr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Whiskr: Cat's Best Friend";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera so you can take a photo of your cat 🐾";
@@ -431,6 +454,7 @@
 				DEVELOPMENT_TEAM = HA64MP7QYK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Whiskr/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Whiskr: Cat's Best Friend";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera so you can take a photo of your cat 🐾";
