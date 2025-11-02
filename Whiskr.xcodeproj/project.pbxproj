@@ -6,10 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		589297DB2EB6B8DA00C7D20C /* Secrets.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 589297DA2EB6B8DA00C7D20C /* Secrets.xcconfig */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		5895C82A2E357DDB009EB626 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -38,7 +34,7 @@
 		589297DD2EB6B8F900C7D20C /* Exceptions for "Whiskr" folder in "Whiskr" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				App/Info.plist,
 			);
 			target = 5895C8192E357DD7009EB626 /* Whiskr */;
 		};
@@ -97,7 +93,6 @@
 				5895C82C2E357DDB009EB626 /* WhiskrTests */,
 				5895C8362E357DDB009EB626 /* WhiskrUITests */,
 				5895C81B2E357DD7009EB626 /* Products */,
-				589297DA2EB6B8DA00C7D20C /* Secrets.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -231,7 +226,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				589297DB2EB6B8DA00C7D20C /* Secrets.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
